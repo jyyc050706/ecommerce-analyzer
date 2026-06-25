@@ -1,6 +1,6 @@
 # ecommerce-analyzer 开发交付记录
 
-## P0 — 项目骨架 [✓] 2026-06-24
+## P0 — 项目骨架 [✓] 
 
 | 文件 | 用途 | 验证方式 |
 |------|------|----------|
@@ -25,7 +25,7 @@
 
 ---
 
-## P1 — 数据管道 [✓] 2026-06-24
+## P1 — 数据管道 [✓] 
 
 | 文件 | 用途 | 验证结果 |
 |------|------|----------|
@@ -48,7 +48,7 @@
 
 ---
 
-## P2 — 探索分析 [✓] 2026-06-24
+## P2 — 探索分析 [✓] 
 
 | 文件 | 用途 | 验证结果 |
 |------|------|----------|
@@ -66,7 +66,7 @@
 
 ---
 
-## P3 — 看板 & 交互 [✓] 2026-06-24
+## P3 — 看板 & 交互 [✓] 
 
 | 文件 | 用途 | 验证结果 |
 |------|------|----------|
@@ -90,7 +90,7 @@ streamlit run dashboard\app.py
 
 ---
 
-## P4 — AI 核心层 [✓] 2026-06-24
+## P4 — AI 核心层 [✓] 
 
 | 文件 | 用途 | 验证结果 |
 |------|------|----------|
@@ -114,7 +114,7 @@ set ZHIPU_API_KEY=你的密钥    # 仅 chart_reader 需要，不设则图表识
 
 ---
 
-## P4 补丁 — 环境配置 & UI 优化 [✓] 2026-06-24
+## P4 补丁 — 环境配置 & UI 优化 [✓] 
 
 | 文件 | 变更 | 说明 |
 |------|------|------|
@@ -135,7 +135,7 @@ set ZHIPU_API_KEY=你的密钥    # 仅 chart_reader 需要，不设则图表识
 
 ---
 
-## P5 — 侧边栏聊天重构 [✓] 2026-06-24
+## P5 — 侧边栏聊天重构 [✓] 
 
 | 影响文件 | 变更 | 说明 |
 |----------|------|------|
@@ -150,7 +150,7 @@ set ZHIPU_API_KEY=你的密钥    # 仅 chart_reader 需要，不设则图表识
 
 ---
 
-## P6 — 右侧可收起面板 [✓] 2026-06-24
+## P6 — 右侧可收起面板 [✓] 
 
 | 影响文件 | 变更 | 说明 |
 |----------|------|------|
@@ -164,7 +164,7 @@ set ZHIPU_API_KEY=你的密钥    # 仅 chart_reader 需要，不设则图表识
 
 ---
 
-## P7 — 聊天历史持久化 [✓] 2026-06-24
+## P7 — 聊天历史持久化 [✓] 
 
 | 文件 | 变更 | 说明 |
 |------|------|------|
@@ -178,7 +178,7 @@ set ZHIPU_API_KEY=你的密钥    # 仅 chart_reader 需要，不设则图表识
 看板重启 → load_chat_history() 读取 → st.session_state 恢复
 ```
 
-## BugFix — Agent 缺失异常查询工具 [✓] 2026-06-24
+## BugFix — Agent 缺失异常查询工具 [✓] 
 
 **问题**：用户问"出现异常的是哪几天"，Agent 用 `compare_period` 回答"最近7天 UV 下降 28.4%"，无法直接给出异常日期。根因：Agent 的 7 个工具（get_kpi/compare_period/drill_down/get_user_segments/get_top_items/get_funnel_data/nl2sql）均不访问异常检测结果，`get_anomaly_report()` 的数据只在异常监控页面直调，Agent 无法触及。
 
@@ -186,7 +186,7 @@ set ZHIPU_API_KEY=你的密钥    # 仅 chart_reader 需要，不设则图表识
 - `query_tools.py` 新增 `get_anomalies()` — 返回各指标异常天数汇总 + 综合异常日（multi_anomaly=1）及对应命中指标
 - `agent.py` 在 TOOLS_DEF 注册第 8 个工具，`_execute_tool` 中分派 `get_anomalies`
 
-## Refactor — ReAct Agent → Data-in-Prompt [✓] 2026-06-24
+## Refactor — ReAct Agent → Data-in-Prompt [✓] 
 
 **动机**：用户指出"每次问问题都要补工具"是面子工程。改 Data-in-Prompt 模式：预计算所有业务数据快照，直接注入 System Prompt，LLM 一步回答，零工具编排。
 
@@ -194,13 +194,13 @@ set ZHIPU_API_KEY=你的密钥    # 仅 chart_reader 需要，不设则图表识
 - `agent.py`：删掉 ReAct 循环（JSON 解析 / `_execute_tool` / `_format_result` 全部移除），`run()` 改为一行 `chat()`；`max_steps` 参数保留但不使用以兼容调用方
 - `prompts.py`：新增 `build_data_snapshot()` — 预计算 KPI 总览、环比、转化漏斗、异常检测、用户分层、近7天逐日表，拼接为 1671 字符 Markdown 快照；SYSTEM_PROMPT 从"能力声明"改为"直接引用快照"指引
 
-## UI — 右侧 AI 面板独立滚轮条 [✓] 2026-06-24
+## UI — 右侧 AI 面板独立滚轮条 [✓] 
 
 **变更**：
 - `chat_drawer.py`：聊天内容用 `st.container(height=500, border=False)` 包裹实现独立滚轮；显示条数从 6 扩大到 20；输入框抽到滚动容器外固定可见
 - CSS 新增自定义滚动条样式（宽 6px / 灰色滑块 / 圆角）
 
-## Refactor — Data-in-Prompt → 混合模式（摘要 + Code Interpreter）[✓] 2026-06-25
+## Refactor — Data-in-Prompt → 混合模式（摘要 + Code Interpreter）[✓] 
 
 **动机**：Data-in-Prompt 模式弊端暴露——纯快照 8000 字符塞进 prompt，每次问新维度（如"近两周"、"周三转化率"）都触及盲区，本质和补工具是同一病根。用户提出混合方案：预计算摘要秒出已知问题，`run_python` 工具兜底未知查询，避免"能预判的还要重新写代码"。
 
@@ -210,13 +210,13 @@ set ZHIPU_API_KEY=你的密钥    # 仅 chart_reader 需要，不设则图表识
 - `llm_client.py`：新增 `chat_with_tools()` — 带工具定义的对话请求，返回 LLM 直接回答文本或工具调用请求 dict
 - 删除 `output/data_snapshot.md` 缓存文件（不再需要）
 
-## UI — AI 回答等待动效 [✓] 2026-06-25
+## UI — AI 回答等待动效 [✓] 
 
 **变更**：
 - `chat_drawer.py`：用户发消息后立即显示用户气泡 + AI 侧 "..." 呼吸动效（CSS 动画三个点逐次闪烁），Agent 返回后替换为实际内容
 - 实现方式：`pending_question` + `st.rerun()` 两段渲染——先渲染占位 "…" → 后台调用 Agent → 替换消息内容 → 再次 rerun 呈现结果
 
-## Feature — 导出报告补全 [✓] 2026-06-25
+## Feature — 导出报告补全 [✓] 
 
 **动机**：导出报告此前仅 4 节（每日指标/用户/漏斗/异常），看板上大部分分析维度未进报告。
 
@@ -224,7 +224,7 @@ set ZHIPU_API_KEY=你的密钥    # 仅 chart_reader 需要，不设则图表识
 - `export.py`：`export_md()` 从 5 参数改为接收 `report` 字典，报告扩至 7 节：数据规模、事件类型分布、KPI 多时段（全周期/近30天/近7天）、每日指标（近7天）、用户分析（活跃度分布+时段偏好+RFM分层）、转化漏斗（总体+工作日vs周末）、异常监控（各指标异常天数+综合异常日明细）
 - `app.py`：`_do_export()` 重构，新增加载 `get_rfm` / `funnel_wd` / `load_cached`，构建完整 `report` 字典传入 `export_md`
 
-## BugFix — 混合模式重构残留僵尸代码 [✓] 2026-06-25
+## BugFix — 混合模式重构残留僵尸代码 [✓] 
 
 **问题**：混合模式重构时删除了 `prompts.py` 中的 `SYSTEM_PROMPT` 和 `ANALYSIS_PROMPTS`，但有 3 处未同步清理：
 
@@ -234,7 +234,7 @@ set ZHIPU_API_KEY=你的密钥    # 仅 chart_reader 需要，不设则图表识
 | 2 | `nl2sql.py` | `import SYSTEM_PROMPT` → ImportError（且从未使用） | 移除多余 import 行 |
 | 3 | `query_tools.py:96` | `df.groupby("day_of_week")` → KeyError（实际列名为 `weekday`） | `day_of_week` → `weekday` |
 
-## P5 — 时序预测 + 异常检测升级 [✓] 2026-06-25
+## P5 — 时序预测 + 异常检测升级 [✓] 
 
 三个模块全部实现：
 
@@ -244,7 +244,7 @@ set ZHIPU_API_KEY=你的密钥    # 仅 chart_reader 需要，不设则图表识
 | 图表识别增强 | `ai_layer/tools/chart_reader.py`（增强） | `read_chart()` 新增 JSON parse + schema 校验，返回真正 dict 而非 raw 字符串；`_parse_json()` 3 种回退策略；`agent.py` 的 `_execute_python` 命名空间新增 `read_chart` / `analyze_chart` |
 | 异常检测升级 | `eda/anomaly_detect.py`（+46行） + `dashboard/pages/anomaly.py`（+62行） | 新增 `detect_prophet_residual()`——Prophet 拟合历史日交易量 → 残差 3σ 标记，输出 4 列（pred/residual/zscore/flag）；接入 `anomaly_report` 作为独立第三层，不投票融合；看板新增 Prophet 拟合 vs 实际对比图 + 残差异常日明细表 |
 
-## BugFix — 4项累积问题修复 [✓] 2026-06-25
+## BugFix — 4项累积问题修复 [✓] 
 
 | 序号 | 问题 | 根因 | 修复 |
 |------|------|------|------|
@@ -253,7 +253,7 @@ set ZHIPU_API_KEY=你的密钥    # 仅 chart_reader 需要，不设则图表识
 | 3 | 预测页 AI 助手无上下文 | `PAGE_CONTEXT` 缺少 forecast | 添加 `"forecast": "当前页面是「时序预测」，展示Prophet预测指标、30天交易量预测图和明细表。"` |
 | 4 | 概览页重复 `st.set_page_config` | `overview.py` show() 内重复调用（app.py 已调用） | 移除该行，消除 Streamlit 报错 |
 
-## P5-Fix — 缓存不清 + 预测页缺失 [✓] 2026-06-25
+## P5-Fix — 缓存不清 + 预测页缺失 [✓] 
 
 | 问题 | 根因 | 修复 |
 |------|------|------|
