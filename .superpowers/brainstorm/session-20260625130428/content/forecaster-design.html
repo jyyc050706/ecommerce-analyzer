@@ -1,0 +1,131 @@
+<h2>Prophet Forecaster 深度设计</h2>
+<p class="subtitle">新建 forecaster.py — 封装 Prophet，面向电商 GMV/订单量预测</p>
+
+<div class="section">
+  <h3>核心 API 设计</h3>
+  <div class="mockup">
+    <div class="mockup-header">Forecaster 类签名</div>
+    <div class="mockup-body">
+      <pre style="color:#cbd5e1;font-size:12px;line-height:1.8;padding:8px;">
+class Forecaster:
+    def __init__(self, df, date_col, target_col,
+                 freq='D',                    # D/W/M
+                 yearly_seasonality=True,
+                 weekly_seasonality=True,
+                 daily_seasonality=False,
+                 holidays_df=None,            # 中国节假日
+                 changepoint_prior_scale=0.05,
+                 seasonality_prior_scale=10.0)
+
+    def fit(self) -> Prophet model
+    def predict(self, periods=30, freq='D')  → DataFrame
+    def forecast_df(self)                    → (历史+预测) DataFrame
+    def plot(self)                           → Plotly Figure
+    def components_plot(self)               → 趋势/季节性分解图
+    def summary(self)                        → Markdown 文本报告
+      </pre>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3 class="label">关键设计决策</h3>
+</div>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="freq-auto" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>频率自动推断</h3>
+      <p>根据 date_col 的时间间隔自动设定 freq（日/周/月），避免用户手动指定。D 和 M 之间还有 W 和 2D 等中间态，自动推断需要设定推断优先级。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="freq-manual" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>频率显式指定</h3>
+      <p>用户必须传入 freq，构造时校验数据采样间隔是否一致，不一致时自动重采样。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <h3 class="label">节假日处理策略</h3>
+</div>
+
+<div class="cards">
+  <div class="card" data-choice="holiday-builtin" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>内置中国节假日表</h3>
+      <p>在模块内维护一份 2018-2030 的中国法定节假日 CSV（含调休），开箱即用。需定期更新。</p>
+    </div>
+  </div>
+  <div class="card" data-choice="holiday-chinese-calendar" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>调用 chinese-calendar 库</h3>
+      <p>pip install chinese-calendar，运行时动态生成节假日 DataFrame。无需维护，但增加依赖。</p>
+    </div>
+  </div>
+  <div class="card" data-choice="holiday-user" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>仅接受用户传入</h3>
+      <p>不内置任何节假日，由用户通过 holidays_df 参数传入。最灵活但需要用户自行准备。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <h3 class="label">与 Anomaly Detector 的融合点</h3>
+  <p style="font-size:13px;color:#94a3b8;">
+    当前 anomaly_detector 仅使用 3σ + IQR 规则。Prophet 可提供残差检测：<br/>
+    预测值 ± 置信区间之外的观测 = 潜在异常。
+  </p>
+  <div class="options">
+    <div class="option" data-choice="anomaly-shared-prophet" onclick="toggleSelect(this)">
+      <div class="letter">A</div>
+      <div class="content">
+        <h3>共享 Prophet 实例</h3>
+        <p>forecaster 拟合后将 model 传给 anomaly_detector，后者调用 predict() 获取残差区间做检测。节省重复拟合。</p>
+      </div>
+    </div>
+    <div class="option" data-choice="anomaly-separate" onclick="toggleSelect(this)">
+      <div class="letter">B</div>
+      <div class="content">
+        <h3>独立拟合</h3>
+        <p>anomaly_detector 内部维护自己的 Prophet 实例，可以调不同参数组合（更激进的 changepoint_prior_scale）。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <h3 class="label">电商特殊场景</h3>
+</div>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="promo-event" onclick="toggleSelect(this)">
+    <div class="letter"></div>
+    <div class="content">
+      <h3>促销事件注入</h3>
+      <p>支持传入促销日 DataFrame（双11/618/年货节），Prophet 将其作为 extra regressor 建模</p>
+    </div>
+  </div>
+  <div class="option" data-choice="multi-series" onclick="toggleSelect(this)">
+    <div class="letter"></div>
+    <div class="content">
+      <h3>多品类分组预测</h3>
+      <p>支持按 category 分组后分别拟合预测，输出合并结果</p>
+    </div>
+  </div>
+  <div class="option" data-choice="rolling-retrain" onclick="toggleSelect(this)">
+    <div class="letter"></div>
+    <div class="content">
+      <h3>滚动重训练提示</h3>
+      <p>数据追加后自动检测是否需要重新训练，给出 MAE/RMSE 变化建议</p>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top:24px; color:#94a3b8; font-size:13px;">
+  请选择你倾向的设计方向（可多选），然后在终端告诉我你的想法。
+</p>

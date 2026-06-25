@@ -1,0 +1,85 @@
+<h2>完整设计总结 - ecommerce-analyzer</h2>
+<p class="subtitle">逐节确认，每节通过后进入下一节</p>
+
+<div class="section">
+  <h3>一、技术栈与模型策略</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#F1F5F9;"><td style="padding:6px 10px;font-weight:600;">层</td><td style="padding:6px 10px;font-weight:600;">V1 选型</td><td style="padding:6px 10px;font-weight:600;">V2 补充</td></tr>
+    <tr><td style="padding:6px 10px;">AI 主模型</td><td style="padding:6px 10px;">DeepSeek（文本推理/nl2sql）</td><td style="padding:6px 10px;">不变</td></tr>
+    <tr style="background:#F8FAFC;"><td style="padding:6px 10px;">视觉模型</td><td style="padding:6px 10px;">不需要</td><td style="padding:6px 10px;">通义千问VL / GPT-4o（chart_reader）</td></tr>
+    <tr><td style="padding:6px 10px;">Web 框架</td><td style="padding:6px 10px;" colspan="2">Streamlit</td></tr>
+    <tr style="background:#F8FAFC;"><td style="padding:6px 10px;">数据处理</td><td style="padding:6px 10px;" colspan="2">Pandas + SQLite</td></tr>
+    <tr><td style="padding:6px 10px;">可视化</td><td style="padding:6px 10px;" colspan="2">Plotly（交互优先）</td></tr>
+    <tr style="background:#F8FAFC;"><td style="padding:6px 10px;">预测</td><td style="padding:6px 10px;">—</td><td style="padding:6px 10px;">Prophet</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>二、多数据源抽象层</h3>
+  <p style="font-size:13px;color:#475569;">BaseDataSource 抽象类 → RetailRocketSource / CSVGenericSource 实现，统一输出标准 schema（user_id, item_id, event_type, timestamp）。后续新数据源只需实现子类。</p>
+</div>
+
+<div class="section">
+  <h3>三、看板布局</h3>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">看板页面结构</div>
+      <div class="mockup-body" style="font-size:12px;">
+        <div class="mock-nav" style="display:flex;gap:10px;padding:6px;font-size:10px;">
+          <span style="color:#3B82F6;">📊 概览</span>
+          <span>👤 用户</span>
+          <span>🕳 漏斗</span>
+          <span>⚠ 异常</span>
+        </div>
+        <div class="placeholder" style="height:180px;">图表区域（全屏沉浸）</div>
+        <div style="border-top:2px solid #3B82F6;padding:6px 10px;display:flex;align-items:center;gap:8px;font-size:10px;">
+          <span style="background:#3B82F6;color:#fff;padding:1px 6px;border-radius:3px;">AI</span>
+          <span style="flex:1;color:#94A3B8;">点击展开 AI 对话分析...</span>
+          <button class="mock-button" style="font-size:10px;padding:2px 8px;">▲ 展开</button>
+        </div>
+        <p style="font-size:10px;color:#94A3B8;margin-top:4px;">展开后为底部抽屉，分析结果支持导出 Markdown/PDF</p>
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">对话持久化</div>
+      <div class="mockup-body" style="font-size:12px;">
+        <p style="font-size:11px;margin-bottom:8px;">SQLite 存储结构：</p>
+        <div style="background:#F1F5F9;padding:8px;border-radius:4px;font-size:10px;line-height:1.6;">
+          sessions（会话ID, 时间, 标题）<br>
+          messages（消息ID, session_id, 角色, 文本）<br>
+          artifacts（产物ID, msg_id, 类型, 路径）<br>
+          <span style="color:#94A3B8;">← 图表/表格/报告都关联到对应消息</span>
+        </div>
+        <p style="font-size:10px;color:#475569;margin-top:6px;">回溯时完整还原：对话 + 当时生成的图表 + 数据表</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>四、AI Agent 链路</h3>
+  <div style="background:#F8FAFC;padding:12px;border-radius:6px;font-size:12px;line-height:1.7;">
+    <strong>用户：</strong>"上周转化率为什么跌了？"<br>
+    <span style="color:#3B82F6;">→ Agent 规划 →</span>
+    <span style="background:#EFF6FF;padding:1px 6px;border-radius:3px;">query_tools.get_kpi</span> →
+    <span style="background:#EFF6FF;padding:1px 6px;border-radius:3px;">drill_down(渠道)</span> →
+    <span style="background:#EFF6FF;padding:1px 6px;border-radius:3px;">nl2sql(自定义下钻)</span><br>
+    <span style="color:#3B82F6;">→ insight_generator 汇总 →</span> 返回报告（原因 + 数据 + 图表）<br>
+    <strong>用户追问：</strong>"移动端具体哪个环节掉的？"<br>
+    <span style="color:#3B82F6;">→ Agent 继承上下文，继续下钻 →</span> 漏斗按步骤拆解
+  </div>
+</div>
+
+<div class="section">
+  <h3>五、开发顺序</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:12px;">
+    <tr style="background:#F1F5F9;"><td style="padding:6px 10px;width:60px;font-weight:600;">板块</td><td style="padding:6px 10px;font-weight:600;">范围</td><td style="padding:6px 10px;width:80px;font-weight:600;">版本</td></tr>
+    <tr><td style="padding:6px 10px;">P0</td><td style="padding:6px 10px;">项目骨架：目录/配置/依赖/数据源抽象基类</td><td style="padding:6px 10px;">V1</td></tr>
+    <tr style="background:#F8FAFC;"><td style="padding:6px 10px;">P1</td><td style="padding:6px 10px;">数据管道：加载/清洗/校验/特征工程</td><td style="padding:6px 10px;">V1</td></tr>
+    <tr><td style="padding:6px 10px;">P2</td><td style="padding:6px 10px;">EDA：画像/漏斗/留存/RFM/异常检测(统计)</td><td style="padding:6px 10px;">V1</td></tr>
+    <tr style="background:#F8FAFC;"><td style="padding:6px 10px;">P3</td><td style="padding:6px 10px;">看板 + 聊天底座 + 报告导出</td><td style="padding:6px 10px;">V1</td></tr>
+    <tr><td style="padding:6px 10px;">P4</td><td style="padding:6px 10px;">AI 核心：DeepSeek API + Agent + nl2sql + query_tools</td><td style="padding:6px 10px;">V1</td></tr>
+    <tr style="background:#F8FAFC;"><td style="padding:6px 10px;">P5</td><td style="padding:6px 10px;">Prophet 预测 + chart_reader(视觉模型) + 异常增强</td><td style="padding:6px 10px;">V2</td></tr>
+    <tr><td style="padding:6px 10px;">P6</td><td style="padding:6px 10px;">新数据源接入验证 + 文档收尾</td><td style="padding:6px 10px;">V3</td></tr>
+  </table>
+</div>

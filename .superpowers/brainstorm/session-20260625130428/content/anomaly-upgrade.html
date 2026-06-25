@@ -1,0 +1,89 @@
+<h2>异常检测升级设计</h2>
+<p class="subtitle">从纯统计 3σ+IQR → 增加 Prophet 残差检测层</p>
+
+<div class="section">
+  <h3>当前架构（eda/anomaly_detect.py）</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="font-family:monospace;font-size:12px;line-height:2;color:#cbd5e1;padding:16px;">
+      <div style="display:flex;align-items:center;gap:24px;">
+        <div style="background:#1e293b;border:1px solid #5b21b6;border-radius:8px;padding:12px 16px;">
+          daily_metrics(df)<br/>
+          <span style="color:#a78bfa;font-size:11px;">9个指标日聚合</span>
+        </div>
+        <span style="color:#64748b;">→</span>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 16px;">
+            detect_3sigma(series)<br/>
+            <span style="color:#94a3b8;font-size:11px;">mean ± 3*std</span>
+          </div>
+          <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 16px;">
+            detect_iqr(series)<br/>
+            <span style="color:#94a3b8;font-size:11px;">Q1±1.5IQR</span>
+          </div>
+        </div>
+        <span style="color:#64748b;">→</span>
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 16px;">
+          anomaly_report()<br/>
+          <span style="color:#94a3b8;font-size:11px;">双规则标记 + 综合异常日</span>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px;background:#0f172a;border-radius:6px;border-left:3px solid #06b6d4;">
+        <span style="color:#22d3ee;">→ 新增</span>
+        <span style="margin-left:16px;background:#065f46;border:1px solid #059669;border-radius:6px;padding:8px 16px;display:inline-block;">
+          detect_prophet_residual(series)<br/>
+          <span style="color:#6ee7b7;font-size:11px;">Prophet 拟合 → 残差 3σ</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <h3 class="label">Prophet 残差检测原理</h3>
+  <div class="mockup">
+    <div class="mockup-body">
+      <pre style="color:#cbd5e1;font-size:12px;line-height:1.8;padding:8px;">
+1. Prophet.fit(ds=日期, y=指标值)
+2. 对历史数据做 predict → 得到 yhat（预测值）
+3. residual = y_true - yhat
+4. 残差 3σ 检测：|residual| > 3 * residual.std() → 异常
+5. 返回 Boolean Series + 残差 DataFrame</pre>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <h3 class="label">集成策略</h3>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="anom-add-layer" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>新增独立检测层</h3>
+      <p>anomaly_report() 增加 prophet_residual 标记列。三个检测方法互不干扰，各产出自己的标记。看板可选择展示哪个。</p>
+      <p style="font-size:11px;color:#64748b;">改动：~30行，anomaly_detect.py 内新增函数 + anomaly_report 增加调用</p>
+    </div>
+  </div>
+  <div class="option" data-choice="anom-ensemble" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>多模型投票融合</h3>
+      <p>三个检测方法对每天投票（≥2 票 → 异常），输出一个综合异常列。降低单方法误报。</p>
+      <p style="font-size:11px;color:#64748b;">改动：~50行，新增 ensemble 逻辑，需要处理三种检测器结果对齐</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <h3 class="label">与 Forecaster 的关系</h3>
+  <p style="font-size:13px;color:#94a3b8;">
+    Forecaster 面向<strong>预测未来</strong>（未来30天交易量），anomaly_detect 面向<strong>回溯历史</strong>（历史数据中的异常日）。<br/>
+    Prophet 残差检测需要拟合 Prophet，但这是 anomaly 模块的内部调用，不依赖 forecaster.py。<br/>
+    两者是独立模块，anomaly 只需要 Prophet 库本身。
+  </p>
+</div>
+
+<p style="margin-top:24px; color:#94a3b8; font-size:13px;">
+  选 A（新增检测层）还是 B（投票融合）？
+</p>

@@ -1,0 +1,105 @@
+<h2>Forecaster 设计（修订版）</h2>
+<p class="subtitle">纯时序预测 — 无节假日/促销注入，仅基于历史模式</p>
+
+<div class="section">
+  <h3>数据现状</h3>
+  <div class="mockup">
+    <div class="mockup-body">
+      <table style="width:100%;font-size:13px;color:#cbd5e1;border-collapse:collapse;">
+        <tr><td style="padding:6px;border-bottom:1px solid #334155;width:160px;">数据源</td><td style="padding:6px;border-bottom:1px solid #334155;">RetailRocket（已脱敏）</td></tr>
+        <tr><td style="padding:6px;border-bottom:1px solid #334155;">事件类型</td><td style="padding:6px;border-bottom:1px solid #334155;">view / addtocart / transaction</td></tr>
+        <tr><td style="padding:6px;border-bottom:1px solid #334155;">时间粒度</td><td style="padding:6px;border-bottom:1px solid #334155;">毫秒级 Unix timestamp → 需聚合到日/周</td></tr>
+        <tr><td style="padding:6px;border-bottom:1px solid #334155;">节假日</td><td style="padding:6px;border-bottom:1px solid #334155;">无（脱敏后不可知）</td></tr>
+        <tr><td style="padding:6px;border-bottom:1px solid #334155;">促销事件</td><td style="padding:6px;border-bottom:1px solid #334155;">无</td></tr>
+        <tr><td style="padding:6px;">外部回归量</td><td style="padding:6px;">无</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3 class="label">预测目标（按日聚合后）</h3>
+</div>
+
+<div class="cards">
+  <div class="card" data-choice="target-gmv" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>日交易量 / GMV</h3>
+      <p>按日统计 transaction 数量或金额（如无金额则用订单数代替）</p>
+    </div>
+  </div>
+  <div class="card" data-choice="target-views" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>日 PV / UV</h3>
+      <p>view 事件日活，预测流量趋势</p>
+    </div>
+  </div>
+  <div class="card" data-choice="target-conversion" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>日转化率</h3>
+      <p>transaction / visitor 日转化率曲线</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <h3 class="label">Prophet 参数策略</h3>
+  <p style="font-size:12px;color:#64748b;margin-bottom:8px;">无外部回归量，只有趋势+季节性</p>
+  <div class="mockup">
+    <div class="mockup-body">
+      <pre style="color:#cbd5e1;font-size:12px;line-height:1.8;padding:8px;">
+model = Prophet(
+    yearly_seasonality='auto',     # 数据不足1年自动关闭
+    weekly_seasonality=True,       # 电商周内规律明显
+    daily_seasonality=False,       # 日聚合后无日内周期
+    changepoint_prior_scale=0.05,  # 默认，不过度拟合突变点
+    seasonality_mode='additive'    # 加法模型，GMV天然可加
+)</pre>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <h3 class="label">核心 API（精简后）</h3>
+  <div class="mockup">
+    <div class="mockup-header">Forecaster 类 — 去掉 holidays / events / 多品类</div>
+    <div class="mockup-body">
+      <pre style="color:#cbd5e1;font-size:12px;line-height:1.8;padding:8px;">
+class Forecaster:
+    def __init__(self, df, date_col='ds', target_col='y',
+                 freq='D',
+                 changepoint_prior_scale=0.05,
+                 seasonality_mode='additive')
+
+    def fit(self)           → self
+    def predict(self, periods=30)  → DataFrame [ds, yhat, yhat_lower, yhat_upper]
+    def plot(self)           → Plotly Figure
+    def components(self)     → 趋势/周季节性分解图
+    def metrics(self)        → MAE / RMSE / MAPE（回测）</pre>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <h3 class="label">与 Anomaly Detector 集成</h3>
+  <div class="options">
+    <div class="option" data-choice="anomaly-residual" onclick="toggleSelect(this)">
+      <div class="letter">A</div>
+      <div class="content">
+        <h3>残差检测（推荐）</h3>
+        <p>fit 后对历史数据做 predict，计算实际值与预测值的残差。残差超出历史 3σ 范围的点标记为异常。不改现有 3σ+IQR 逻辑，作为新增检测层。</p>
+      </div>
+    </div>
+    <div class="option" data-choice="anomaly-ci" onclick="toggleSelect(this)">
+      <div class="letter">B</div>
+      <div class="content">
+        <h3>置信区间检测</h3>
+        <p>观测值落在 yhat_lower 以下或 yhat_upper 以上 → 异常。对突变点更敏感但可能有更多误报。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top:24px; color:#94a3b8; font-size:13px;">
+  请选择预测目标（可多选）和异常集成策略，然后告诉我你的决定。
+</p>

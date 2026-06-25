@@ -1,0 +1,72 @@
+<h2>Chart Reader 增强设计</h2>
+<p class="subtitle">当前：单图识别 + 自然语言分析。明确增强边界。</p>
+
+<div class="section">
+  <h3>当前现状（ai_layer/tools/chart_reader.py）</h3>
+  <div class="mockup">
+    <div class="mockup-body">
+      <table style="width:100%;font-size:13px;color:#cbd5e1;border-collapse:collapse;">
+        <tr><td style="padding:6px;border-bottom:1px solid #334155;width:140px;">视觉模型</td><td style="padding:6px;border-bottom:1px solid #334155;">智谱 GLM-4V</td></tr>
+        <tr><td style="padding:6px;border-bottom:1px solid #334155;">分析模型</td><td style="padding:6px;border-bottom:1px solid #334155;">DeepSeek</td></tr>
+        <tr><td style="padding:6px;border-bottom:1px solid #334155;">输入</td><td style="padding:6px;border-bottom:1px solid #334155;">单张图片路径</td></tr>
+        <tr><td style="padding:6px;border-bottom:1px solid #334155;">输出</td><td style="padding:6px;border-bottom:1px solid #334155;">raw 文本 + NL 分析</td></tr>
+        <tr><td style="padding:6px;border-bottom:1px solid #334155;">图表类型</td><td style="padding:6px;border-bottom:1px solid #334155;">6种（柱/折/饼/漏斗/散点/热力）</td></tr>
+        <tr><td style="padding:6px;">Prompt 提取字段</td><td style="padding:6px;">类型、标题、轴标签、数据系列、异常点、趋势</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <h3 class="label">增强方向</h3>
+</div>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="enhance-structured" onclick="toggleSelect(this)">
+    <div class="letter"></div>
+    <div class="content">
+      <h3>结构化输出标准</h3>
+      <p>read_chart() 返回真正的 dict（非 raw 字符串）。JSON Schema 定义 + parse 校验 + 降级回退。analyze_chart() 接收结构化 dict 而非 raw 字符串。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="enhance-batch" onclick="toggleSelect(this)">
+    <div class="letter"></div>
+    <div class="content">
+      <h3>批量分析</h3>
+      <p>read_charts(paths: list) → 并发调用 GLM-4V，返回 list[dict]。用于对比多时间段的同类图表。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="enhance-markdown" onclick="toggleSelect(this)">
+    <div class="letter"></div>
+    <div class="content">
+      <h3>Markdown 报告输出</h3>
+      <p>analyze_chart() 新增 output_format='text'|'markdown'，返回结构化报告：标题、关键数据、异常标注、结论建议。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="enhance-ask-agent" onclick="toggleSelect(this)">
+    <div class="letter"></div>
+    <div class="content">
+      <h3>Agent 对接</h3>
+      <p>暴露为函数工具，供 agent.py 的自然语言路由调用。用户说"分析这张图"→ agent 自动调 chart_reader。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <h3 class="label">工作量估算</h3>
+  <div class="mockup">
+    <div class="mockup-body">
+      <table style="width:100%;font-size:13px;color:#cbd5e1;border-collapse:collapse;">
+        <tr style="color:#94a3b8;font-size:11px;"><td style="padding:4px 8px;border-bottom:1px solid #334155;">增强项</td><td style="padding:4px 8px;border-bottom:1px solid #334155;">改动量</td><td style="padding:4px 8px;border-bottom:1px solid #334155;">风险</td></tr>
+        <tr><td style="padding:6px 8px;border-bottom:1px solid #1e293b;">结构化输出</td><td style="padding:6px 8px;border-bottom:1px solid #1e293b;">~40 行</td><td style="padding:6px 8px;border-bottom:1px solid #1e293b;">低，向后兼容</td></tr>
+        <tr><td style="padding:6px 8px;border-bottom:1px solid #1e293b;">批量分析</td><td style="padding:6px 8px;border-bottom:1px solid #1e293b;">~20 行</td><td style="padding:6px 8px;border-bottom:1px solid #1e293b;">低，独立函数</td></tr>
+        <tr><td style="padding:6px 8px;border-bottom:1px solid #1e293b;">Markdown 报告</td><td style="padding:6px 8px;border-bottom:1px solid #1e293b;">~15 行</td><td style="padding:6px 8px;border-bottom:1px solid #1e293b;">低，纯格式化</td></tr>
+        <tr><td style="padding:6px 8px;">Agent 对接</td><td style="padding:6px 8px;">~10 行</td><td style="padding:6px 8px;">中，需改 agent.py 路由</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top:24px; color:#94a3b8; font-size:13px;">
+  四个增强项改动量都不大，全选可以一次完成。你的决定？
+</p>

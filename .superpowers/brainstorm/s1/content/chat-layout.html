@@ -1,0 +1,87 @@
+<h2>聊天框布局偏好</h2>
+<p class="subtitle">Streamlit 看板 + AI 聊天交互入口的位置</p>
+
+<div class="cards">
+  <div class="card" data-choice="sidebar" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">A - 右侧固定侧边栏</div>
+        <div class="mockup-body">
+          <div style="display:flex;gap:1px;height:180px;">
+            <div style="flex:3;background:#f1f5f9;padding:8px;">
+              <div class="placeholder" style="height:30px;margin-bottom:8px;">KPI 指标卡片</div>
+              <div class="placeholder" style="height:60px;margin-bottom:8px;">趋势图</div>
+              <div class="placeholder" style="height:50px;">漏斗图</div>
+            </div>
+            <div style="flex:1.5;background:#fff;border-left:2px solid #3B82F6;padding:8px;display:flex;flex-direction:column;">
+              <div style="font-weight:600;font-size:12px;color:#3B82F6;margin-bottom:6px;">AI 助手</div>
+              <div style="background:#EFF6FF;padding:6px;border-radius:4px;font-size:10px;margin-bottom:4px;">转化率为什么跌了？</div>
+              <div style="background:#F0FDF4;padding:6px;border-radius:4px;font-size:10px;margin-bottom:4px;">移动端-25%，PC持平...</div>
+              <div class="mock-input" style="margin-top:auto;font-size:10px;">追问或输入新问题...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A - 右侧固定侧边栏</h3>
+      <p>聊天始终可见，看板与对话同屏，适合边看数据边讨论</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="drawer" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">B - 底部弹出式抽屉</div>
+        <div class="mockup-body">
+          <div style="display:flex;flex-direction:column;height:180px;">
+            <div style="flex:1;background:#f1f5f9;padding:8px;">
+              <div class="placeholder" style="height:30px;margin-bottom:8px;">KPI 指标卡片</div>
+              <div class="placeholder" style="height:60px;margin-bottom:8px;">趋势图</div>
+              <div class="placeholder" style="height:25px;">漏斗图</div>
+            </div>
+            <div style="height:55px;background:#fff;border-top:2px solid #3B82F6;padding:6px 10px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="background:#3B82F6;color:#fff;padding:2px 8px;border-radius:3px;font-size:10px;">AI 助手</div>
+                <div style="background:#EFF6FF;padding:4px 8px;border-radius:4px;font-size:10px;flex:1;">转化率为什么跌了？</div>
+                <button class="mock-button" style="font-size:10px;padding:2px 8px;">展开</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B - 底部弹出式抽屉</h3>
+      <p>看板全屏沉浸，需要聊天时从底部拉出展开，不占常驻空间</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="tab" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">C - 独立标签页切换</div>
+        <div class="mockup-body">
+          <div style="display:flex;flex-direction:column;height:180px;">
+            <div class="mock-nav" style="display:flex;gap:12px;padding:6px 10px;font-size:11px;">
+              <span style="color:#3B82F6;font-weight:600;">看板</span>
+              <span>|</span>
+              <span>AI 对话</span>
+              <span>|</span>
+              <span>报告</span>
+            </div>
+            <div style="flex:1;background:#f1f5f9;padding:8px;">
+              <div class="placeholder" style="height:30px;margin-bottom:8px;">KPI 指标卡片</div>
+              <div class="placeholder" style="height:60px;margin-bottom:8px;">趋势图</div>
+              <div class="placeholder" style="height:40px;">漏斗图</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C - 独立标签页切换</h3>
+      <p>看板和聊天各自全屏，通过顶部标签切换，聚焦单一任务</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,147 @@
+<h2>看板框架预览（修正版）</h2>
+<p class="subtitle">对话布局：用户右侧 / AI 左侧</p>
+
+<div class="mockup">
+  <div class="mockup-header">ecommerce-analyzer — 概览</div>
+  <div class="mockup-body">
+    <!-- 顶部导航 -->
+    <div style="display:flex;gap:0;border-bottom:2px solid #E2E8F0;padding:0 12px;margin-bottom:12px;">
+      <div style="padding:8px 14px;border-bottom:2px solid #3B82F6;color:#3B82F6;font-weight:600;font-size:13px;margin-bottom:-2px;">📊 概览</div>
+      <div style="padding:8px 14px;color:#64748B;font-size:13px;">👤 用户分析</div>
+      <div style="padding:8px 14px;color:#64748B;font-size:13px;">🕳 转化漏斗</div>
+      <div style="padding:8px 14px;color:#64748B;font-size:13px;">⚠ 异常监控</div>
+      <div style="margin-left:auto;padding:8px 0;font-size:12px;color:#94A3B8;">数据源: RetailRocket | 最后更新: 2026-06-24</div>
+    </div>
+
+    <!-- KPI 卡片行 -->
+    <div style="display:flex;gap:12px;margin-bottom:12px;">
+      <div style="flex:1;background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:14px;">
+        <div style="font-size:11px;color:#94A3B8;">浏览量</div>
+        <div style="font-size:24px;font-weight:700;color:#1E293B;">1,248,000</div>
+        <div style="font-size:11px;color:#10B981;">↑ 12.5% vs 上周</div>
+      </div>
+      <div style="flex:1;background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:14px;">
+        <div style="font-size:11px;color:#94A3B8;">加购率</div>
+        <div style="font-size:24px;font-weight:700;color:#1E293B;">8.3%</div>
+        <div style="font-size:11px;color:#EF4444;">↓ 1.2% vs 上周</div>
+      </div>
+      <div style="flex:1;background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:14px;">
+        <div style="font-size:11px;color:#94A3B8;">转化率</div>
+        <div style="font-size:24px;font-weight:700;color:#1E293B;">2.7%</div>
+        <div style="font-size:11px;color:#10B981;">↑ 0.3% vs 上周</div>
+      </div>
+      <div style="flex:1;background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:14px;">
+        <div style="font-size:11px;color:#94A3B8;">活跃用户</div>
+        <div style="font-size:24px;font-weight:700;color:#1E293B;">45,820</div>
+        <div style="font-size:11px;color:#10B981;">↑ 8.1% vs 上周</div>
+      </div>
+    </div>
+
+    <!-- 图表区（双列） -->
+    <div style="display:flex;gap:12px;margin-bottom:12px;">
+      <div style="flex:1;background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:14px;">
+        <div style="font-size:12px;font-weight:600;color:#475569;margin-bottom:8px;">日活趋势（近30天）</div>
+        <div style="height:160px;background:linear-gradient(180deg, #EFF6FF 0%, #DBEAFE 100%);border-radius:4px;display:flex;align-items:center;justify-content:center;color:#3B82F6;font-size:11px;">[ Plotly 折线图 ]</div>
+      </div>
+      <div style="flex:1;background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:14px;">
+        <div style="font-size:12px;font-weight:600;color:#475569;margin-bottom:8px;">事件分布</div>
+        <div style="height:160px;background:linear-gradient(180deg, #F0FDF4 0%, #DCFCE7 100%);border-radius:4px;display:flex;align-items:center;justify-content:center;color:#10B981;font-size:11px;">[ Plotly 饼图 ]</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-bottom:12px;">
+      <div style="flex:1;background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:14px;">
+        <div style="font-size:12px;font-weight:600;color:#475569;margin-bottom:8px;">Top 10 商品排行</div>
+        <div style="height:140px;background:linear-gradient(180deg, #FFF7ED 0%, #FFEDD5 100%);border-radius:4px;display:flex;align-items:center;justify-content:center;color:#F97316;font-size:11px;">[ Plotly 条形图 ]</div>
+      </div>
+      <div style="flex:1;background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:14px;">
+        <div style="font-size:12px;font-weight:600;color:#475569;margin-bottom:8px;">小时级活跃分布</div>
+        <div style="height:140px;background:linear-gradient(180deg, #FAF5FF 0%, #F3E8FF 100%);border-radius:4px;display:flex;align-items:center;justify-content:center;color:#A855F7;font-size:11px;">[ Plotly 热力图 ]</div>
+      </div>
+    </div>
+
+    <!-- 底部 AI 抽屉（展开） -->
+    <div style="border-top:3px solid #3B82F6;background:#fff;border-radius:8px 8px 0 0;overflow:hidden;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#F8FAFC;border-bottom:1px solid #E2E8F0;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="background:#3B82F6;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">AI 分析</span>
+          <span style="font-size:11px;color:#64748B;">DeepSeek · 上下文已保留</span>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="mock-button" style="font-size:10px;padding:3px 10px;">📥 导出 MD</button>
+          <button class="mock-button" style="font-size:10px;padding:3px 10px;">📄 导出 PDF</button>
+          <button class="mock-button" style="font-size:10px;padding:3px 10px;">▼ 收起</button>
+        </div>
+      </div>
+      <!-- 对话区 -->
+      <div style="padding:12px 14px;max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;">
+        <!-- AI 消息（左） -->
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div style="background:#3B82F6;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">AI</div>
+          <div>
+            <div style="font-size:10px;color:#3B82F6;margin-bottom:3px;">14:32</div>
+            <div style="background:#EFF6FF;padding:8px 12px;border-radius:6px;font-size:12px;max-width:380px;">
+              <strong>收到。我会从以下维度分析：</strong><br>
+              1. 转化率趋势（近30天）<br>
+              2. 按渠道拆解<br>
+              3. 与去年同期对比<br>
+              <span style="color:#3B82F6;">正在查询中...</span>
+            </div>
+          </div>
+        </div>
+        <!-- AI 结果消息（左） -->
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div style="background:#3B82F6;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">AI</div>
+          <div>
+            <div style="font-size:10px;color:#3B82F6;margin-bottom:3px;">14:32</div>
+            <div style="background:#EFF6FF;padding:8px 12px;border-radius:6px;font-size:12px;max-width:380px;">
+              <strong>分析结论：</strong>转化率 3.1%→2.7%(-0.4pp)<br>
+              1. 移动端 -18%，PC 端持平<br>
+              2. 详情页→加购环节流失最大<br><br>
+              <span style="background:#DBEAFE;padding:1px 6px;border-radius:3px;font-size:10px;">📊 趋势图</span>
+              <span style="background:#DBEAFE;padding:1px 6px;border-radius:3px;font-size:10px;margin-left:4px;">📋 渠道表</span>
+            </div>
+          </div>
+        </div>
+        <!-- 用户消息（右） -->
+        <div style="display:flex;gap:8px;align-items:flex-start;justify-content:flex-end;">
+          <div>
+            <div style="font-size:10px;color:#94A3B8;margin-bottom:3px;text-align:right;">你 · 14:33</div>
+            <div style="background:#3B82F6;color:#fff;padding:8px 12px;border-radius:6px;font-size:12px;max-width:380px;">
+              移动端具体哪个环节掉的？
+            </div>
+          </div>
+          <div style="background:#64748B;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">你</div>
+        </div>
+        <!-- AI 追问回复（左） -->
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div style="background:#3B82F6;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">AI</div>
+          <div>
+            <div style="font-size:10px;color:#3B82F6;margin-bottom:3px;">14:33</div>
+            <div style="background:#EFF6FF;padding:8px 12px;border-radius:6px;font-size:12px;max-width:380px;">
+              <strong>移动端漏斗拆解：</strong><br>
+              浏览(100%) → 详情(42%) → <span style="color:#EF4444;">加购(8.3%)</span> → 下单(2.7%)<br>
+              详情→加购比 PC 端低 5pp，建议检查移动端详情页加载速度
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 输入区 -->
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-top:1px solid #E2E8F0;background:#F8FAFC;">
+        <input class="mock-input" placeholder="继续追问，或输入新的分析问题..." style="flex:1;font-size:12px;">
+        <button class="mock-button" style="font-size:12px;padding:4px 14px;background:#3B82F6;color:#fff;border:none;">发送</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;gap:12px;margin-top:16px;">
+  <div style="flex:1;background:#FEF3C7;padding:10px;border-radius:6px;font-size:12px;">
+    <strong>布局规则</strong><br>
+    <span style="font-size:11px;color:#92400E;">AI 回复：左侧蓝底 + 左侧 AI 头像<br>用户消息：右侧蓝底 + 右侧用户头像</span>
+  </div>
+  <div style="flex:1;background:#F0FDF4;padding:10px;border-radius:6px;font-size:12px;">
+    <strong>已确认功能</strong><br>
+    <span style="font-size:11px;color:#166534;">对话持久化 · 分析产物存档 · 上下文追问 · 导出 MD/PDF</span>
+  </div>
+</div>

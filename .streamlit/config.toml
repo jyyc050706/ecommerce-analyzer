@@ -1,0 +1,8 @@
+[theme]
+primaryColor = "#94A3B8"
+
+[server]
+enableCORS = false
+
+[toolbar]
+mode = "minimal"

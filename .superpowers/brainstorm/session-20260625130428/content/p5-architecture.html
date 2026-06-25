@@ -1,0 +1,92 @@
+<h2>P5 组件架构：时序预测 + 多模态 + 异常增强</h2>
+<p class="subtitle">三个新模块如何融入现有 ecommerce-analyzer 体系</p>
+
+<div class="section">
+  <h3>整体架构</h3>
+  <div class="mockup">
+    <div class="mockup-header">Ecommerce Analyzer — 模块关系图</div>
+    <div class="mockup-body">
+      <div style="padding:16px;font-family:monospace;font-size:13px;line-height:2;color:#cbd5e1;">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <!-- 数据层 -->
+          <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px;flex:1;min-width:180px;">
+            <div style="color:#60a5fa;font-weight:600;margin-bottom:6px;">DataSource Layer</div>
+            <div style="color:#94a3b8;font-size:11px;">PostgreSQL / CSV / API</div>
+          </div>
+          <!-- 分析引擎 -->
+          <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px;flex:2;min-width:300px;">
+            <div style="color:#60a5fa;font-weight:600;margin-bottom:6px;">AnalysisEngine</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:11px;">
+              <span style="background:#1e3a5f;padding:2px 8px;border-radius:4px;">pandas-profiling</span>
+              <span style="background:#1e3a5f;padding:2px 8px;border-radius:4px;">anomaly_detector</span>
+              <span style="background:#5b21b6;padding:2px 8px;border-radius:4px;color:#c4b5fd;">→ prophet_forecaster ⚡NEW</span>
+              <span style="background:#065f46;padding:2px 8px;border-radius:4px;color:#6ee7b7;">→ chart_reader ⚡ENHANCE</span>
+            </div>
+          </div>
+          <!-- 看板 -->
+          <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px;flex:1;min-width:160px;">
+            <div style="color:#60a5fa;font-weight:600;margin-bottom:6px;">Dashboard / API</div>
+            <div style="color:#94a3b8;font-size:11px;">Streamlit / Flask REST</div>
+          </div>
+        </div>
+        <!-- AI Agent -->
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px;margin-top:12px;">
+          <div style="color:#60a5fa;font-weight:600;margin-bottom:6px;">AI Agent（NLP 入口）</div>
+          <div style="font-size:11px;color:#94a3b8;">用户自然语言 → 路由 → forecaster / chart_reader / anomaly_detector</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>三个子模块设计方向</h3>
+</div>
+
+<div class="cards">
+  <div class="card" data-choice="forecaster-design" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>Prophet Forecaster</h3>
+      <p>新建 forecaster.py，封装 Facebook Prophet</p>
+      <ul style="font-size:12px;color:#94a3b8;">
+        <li>月度 GMV / 订单量预测</li>
+        <li>自动检测节假日效应（双11/618）</li>
+        <li>输出：趋势、季节性、置信区间</li>
+        <li>可视化：Plotly 交互图</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card" data-choice="chart-reader" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>Chart Reader（增强）</h3>
+      <p>已有 Zhipu GLM-4V → DeepSeek 链路</p>
+      <ul style="font-size:12px;color:#94a3b8;">
+        <li>支持更多图表类型（雷达图/热力图）</li>
+        <li>批量分析多张图表</li>
+        <li>输出格式化 Markdown 报告</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card" data-choice="anomaly-hybrid" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>异常检测增强</h3>
+      <p>从纯统计 → 统计+时序混合</p>
+      <ul style="font-size:12px;color:#94a3b8;">
+        <li>保留 3σ + IQR 规则</li>
+        <li>新增 Prophet 残差检测</li>
+        <li>新增 STL 分解异常</li>
+        <li>多模型投票/加权融合</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3 class="label">需要确定的设计决策</h3>
+  <div class="pros-cons">
+    <div class="pros"><h4>就这个架构</h4><ul><li>各模块独立，低耦合</li><li>AI Agent 统一入口</li><li>不强依赖新模块</li></ul></div>
+    <div class="cons"><h4>需要讨论</h4><ul><li>forecaster 与 anomaly 的 Prophet 实例是否共享？</li><li>chart_reader 增强边界在哪？</li><li>异常检测融合策略：投票 vs 加权？</li></ul></div>
+  </div>
+</div>
+
+<p style="margin-top:24px; color:#94a3b8; font-size:13px;">请点击你希望优先深入设计的模块，或在终端告诉我你的想法。</p>

@@ -1,0 +1,34 @@
+# 数据集
+data/
+
+# 导出报告
+output/
+*.md.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+.venv/
+venv/
+
+# 环境变量 / 密钥
+.env
+*.key
+
+# Streamlit
+.streamlit/secrets.toml
+
+# IDE
+.vscode/
+.idea/
+
+# 系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 中间产物
+temp/

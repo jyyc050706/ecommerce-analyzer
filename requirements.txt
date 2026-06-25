@@ -1,0 +1,14 @@
+# ===== V1 核心依赖 =====
+streamlit
+pandas
+numpy
+plotly
+openai              # DeepSeek 兼容接口
+python-dotenv
+scipy
+openpyxl            # CSV/Excel 数据源支持
+tabulate            # pandas to_markdown 依赖
+
+# ===== V2 增强（暂不安装） =====
+# prophet
+# Pillow
