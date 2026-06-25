@@ -3,6 +3,7 @@
 # ecommerce-analyzer
 
 端到端电商数据分析平台 — 基于 Kaggle RetailRocket 140 万条用户行为数据，集成 AI Agent 智能分析引擎，支持自然语言对话式深度分析与 Prophet 时序预测。
+个人学习项目，不承诺维护，跑通即用
 
 <!-- SCREENSHOT: 概览页仪表盘全貌（KPI卡片 + 日趋势图 + 事件分布饼图），展示平台主界面 -->
 ![概览页](screenshots/overview.png)
@@ -25,7 +26,10 @@
 ![用户分析](screenshots/user.png)
 
 <!-- SCREENSHOT: 异常监控页（Prophet拟合对比图 + 残差异常日明细表） -->
-![异常监控](screenshots/anomaly.png)
+![异常检测摘要](screenshots/anomaly1.png)
+![异常可视化](screenshots/anomaly2.png)
+![残差异常检测](screenshots/anomaly3.png)
+![综合异常日详情](screenshots/anomaly4.png)
 
 ### AI 智能分析
 
@@ -263,11 +267,11 @@ ecommerce-analyzer/
 
 [Kaggle RetailRocket E-commerce Dataset](https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset) — 137 天用户行为记录，含浏览 / 加购 / 交易三类事件，覆盖 140 万条事件、31 万独立商品。
 
-需从 Kaggle 手动下载 3 个 CSV 文件放入 `data/` 目录。
+需从 Kaggle 手动下载CSV 文件放入 `data/` 目录。
 
 ---
 
 ## 许可证
 
 MIT
-*（内容由AI生成，仅供参考）*
+
